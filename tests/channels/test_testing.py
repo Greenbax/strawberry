@@ -1,17 +1,27 @@
-from typing import Generator
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Generator
 
 import pytest
 
-from strawberry.channels.handlers.ws_handler import GraphQLWSConsumer
-from strawberry.channels.testing import GraphQLWebsocketCommunicator
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
 from tests.http.schema import get_schema
+
+if TYPE_CHECKING:
+    from strawberry.channels.testing import GraphQLWebsocketCommunicator
 
 application = GraphQLWSConsumer.as_asgi(schema=get_schema(), keep_alive_interval=50)
 
 
 @pytest.fixture(params=[GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL])
-async def communicator(request) -> Generator[GraphQLWebsocketCommunicator, None, None]:
+async def communicator(
+    request: Any,
+) -> Generator[GraphQLWebsocketCommunicator, None, None]:
+    from strawberry.channels import GraphQLWSConsumer
+    from strawberry.channels.testing import GraphQLWebsocketCommunicator
+
+    application = GraphQLWSConsumer.as_asgi(schema=schema, keep_alive_interval=50)
+
     async with GraphQLWebsocketCommunicator(
         protocol=request.param, application=application, path="/graphql"
     ) as client:

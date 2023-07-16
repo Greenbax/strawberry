@@ -11,6 +11,23 @@ from strawberry.channels.handlers.ws_handler import GraphQLWSConsumer
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
 from tests.http.schema import get_schema
 
+try:
+    from channels.testing.websocket import WebsocketCommunicator
+    from strawberry.channels.handlers.graphql_transport_ws_handler import (
+        GraphQLTransportWSHandler,
+    )
+    from strawberry.channels.handlers.graphql_ws_handler import GraphQLWSHandler
+    from strawberry.channels.handlers.ws_handler import GraphQLWSConsumer
+except ImportError:
+    pytestmark = pytest.mark.skip("Channels is not installed")
+    GraphQLWSHandler = None
+    GraphQLTransportWSHandler = None
+
+from strawberry.subscriptions import (
+    GRAPHQL_TRANSPORT_WS_PROTOCOL,
+    GRAPHQL_WS_PROTOCOL,
+)
+
 
 async def test_wrong_protocol():
     GraphQLWSConsumer.as_asgi(schema=get_schema())
