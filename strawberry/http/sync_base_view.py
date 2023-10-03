@@ -11,6 +11,8 @@ from typing import (
     Union,
 )
 
+from graphql import GraphQLError
+
 from strawberry import UNSET
 from strawberry.exceptions import MissingQueryError
 from strawberry.file_uploads.utils import replace_placeholders_with_files
@@ -166,6 +168,13 @@ class SyncBaseHTTPView(
             variables=data.get("variables"),  # type: ignore
             operation_name=data.get("operationName"),
         )
+
+    def _handle_errors(
+        self, errors: List[GraphQLError], response_data: GraphQLHTTPResponse
+    ) -> None:
+        """
+        Hook to allow custom handling of errors, used by the Sentry Integration
+        """
 
     def run(
         self,

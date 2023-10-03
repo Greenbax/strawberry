@@ -1,7 +1,17 @@
 import abc
 import asyncio
 import json
-from typing import Callable, Dict, Generic, List, Mapping, Optional, Union
+from typing import (
+    Callable,
+    Dict,
+    Generic,
+    List,
+    Mapping,
+    Optional,
+    Union,
+)
+
+from graphql import GraphQLError
 
 from strawberry import UNSET
 from strawberry.exceptions import MissingQueryError
@@ -132,6 +142,13 @@ class AsyncBaseHTTPView(
             )
         except KeyError as e:
             raise HTTPException(400, "File(s) missing in form data") from e
+
+    def _handle_errors(
+        self, errors: List[GraphQLError], response_data: GraphQLHTTPResponse
+    ) -> None:
+        """
+        Hook to allow custom handling of errors, used by the Sentry Integration
+        """
 
     async def run(
         self,
