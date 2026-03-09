@@ -10,7 +10,8 @@ from dataclasses import (  # type: ignore
 )
 from typing import Any
 
-from strawberry.ext.dataclasses.dataclasses import dataclass_init_fn
+if sys.version_info < (3, 10):
+    from strawberry.ext.dataclasses.dataclasses import dataclass_init_fn
 
 
 def add_custom_init_fn(cls: Any) -> None:

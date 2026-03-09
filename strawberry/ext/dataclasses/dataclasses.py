@@ -2,16 +2,22 @@
 # This code is licensed under the Python Software Foundation License Version 2
 #
 
-from dataclasses import (  # type: ignore
-    _FIELD_INITVAR,
-    _HAS_DEFAULT_FACTORY,
-    _POST_INIT_NAME,
-    MISSING,
-    _create_fn,
-    _field_init,
-    _init_param,
-)
+import sys
 from typing import Any, Dict, List
+
+# This module is only used on Python < 3.10 (where kw_only is not available).
+# On Python 3.14+, the private _create_fn was removed from dataclasses, so we
+# guard the import to avoid ImportError on newer Pythons.
+if sys.version_info < (3, 10):
+    from dataclasses import (  # type: ignore
+        _FIELD_INITVAR,
+        _HAS_DEFAULT_FACTORY,
+        _POST_INIT_NAME,
+        MISSING,
+        _create_fn,
+        _field_init,
+        _init_param,
+    )
 
 
 def dataclass_init_fn(
@@ -34,7 +40,7 @@ def dataclass_init_fn(
     https://github.com/python/cpython/blob/v3.9.6/Lib/dataclasses.py#L489-L536
 
     Note: in Python 3.10 and above we use the `kw_only` argument to achieve the
-    same result.
+    same result. This function should never be called on Python >= 3.10.
     """
     # fields contains both real fields and InitVar pseudo-fields.
 

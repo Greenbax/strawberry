@@ -122,7 +122,7 @@ def get_optional_annotation(annotation: Type) -> Type:
     # type (normally a Union type).
 
     if len(non_none_types) > 1:
-        return annotation.copy_with(non_none_types)
+        return Union[non_none_types]
 
     return non_none_types[0]
 
